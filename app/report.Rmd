@@ -1,0 +1,656 @@
+---
+title: "Food Environmental Impacts - Customized Report"
+author: "`r input$your_name`"
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    toc: true
+    toc_depth: 3
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+```
+
+\newpage
+
+## Your Profile
+
+-   **Sex/Gender:** `r ifelse(input$sex == "male", "Male", "Female")`
+
+-   **Age:** `r input$age`
+
+-   **Height:** `r input$height` cm
+
+-   **Weight:** `r input$weight` kg
+
+-   **Body Mass Index:** `r bmi_individual()` kg/m^2^
+
+-   **Basal Metabolic Rate:** `r bmr_individual()` kcal
+
+\newpage
+
+
+## Your Consumption Habits
+
+### Food Consumption
+
+```{r, fig.height = 4, echo = FALSE}
+
+
+data_ind_food_conso <- left_join(food_quantity_individual(), match_macro_specific) %>% 
+                 filter(macro_group != "Beverages") %>% 
+                 group_by(macro_group) %>% 
+                 summarise(share_conso = sum(share_conso))
+
+
+data_dem_food_conso <- yearly_conso_demo_groups %>% 
+          filter(macro_group != "Beverages") %>% 
+          filter(demographic_group == dem_profile_individual()) %>% 
+          group_by(macro_group) %>% 
+          summarise(share_conso = sum(share_conso))
+
+
+ggarrange(
+  
+  ggplot(data_ind_food_conso, aes(x = "", y = share_conso, fill = macro_group)) +
+    geom_bar(stat = "identity", position = "stack", width = 0.3) +
+  theme_light() +
+  labs(title = paste0("Your estimated yearly food consumption: ", food_total_quantity(), " kg"),
+       fill = "Macro Group") +
+    xlab("You") + ylab("Share of Diet (%)") + 
+  theme(
+    plot.title = element_text(size = 8, hjust = 0.5),
+    legend.title = element_blank(),
+    legend.text = element_text(size = 6),
+    legend.position = "top",
+     legend.box.just = "center",  
+    plot.margin = margin(10, 10, 10, 10),
+    axis.title.y = element_text(size = 7),  
+    axis.title.x = element_text(size = 7),
+    axis.text.y = element_text(size = 7),  
+    axis.text.x = element_text(size = 7) 
+  ) +
+  scale_fill_manual(values = colors_macrofood[2:12]),
+  
+  
+  ggplot(data_dem_food_conso, aes(x = "", y = share_conso, fill = macro_group)) +
+    geom_bar(stat = "identity", position = "stack", width = 0.3) +
+  theme_light() +
+  labs(title = paste0(dem_profile_individual(), " average yearly food consumption: ", round( sum( (yearly_conso_demo_groups %>% filter(macro_group != "Beverages") %>% filter(demographic_group == dem_profile_individual() ) )$value ), digits = 0), " kg"),
+       fill = "Macro Group") +
+        xlab(paste0(dem_profile_individual())) + ylab("Share of Diet (%)") + 
+  theme(
+    plot.title = element_text(size = 8, hjust = 0.5),
+    legend.title = element_blank(),
+    legend.text = element_text(size = 6),
+    legend.position = "top",
+     legend.box.just = "center", 
+    plot.margin = margin(10, 10, 10, 10),
+    axis.title.y = element_text(size = 7),
+    axis.title.x = element_text(size = 7),
+    axis.text.y = element_text(size = 7), 
+    axis.text.x = element_text(size = 7) 
+  ) +
+  scale_fill_manual(values = colors_macrofood[2:12]),
+  
+
+  common.legend = TRUE, legend = "top"
+  
+)
+
+
+```
+
+### Beverage Consumption
+
+```{r, fig.height = 4, echo = FALSE}
+
+
+ggarrange(
+  
+  ggplot(beverage_quantity_individual(), aes(x = "", y = share_conso, fill = specific_group)) +
+    geom_bar(stat = "identity", position = "stack", width = 0.3) +
+  theme_light() +
+  labs(title =  paste0("Your estimated yearly beverage consumption: ", beverage_total_yearly_quantity(), " L\n(about ", convert_to_glass(beverage_total_yearly_quantity(), "year", "water")  , " glasses per day)"),
+       fill = "Specific Group") +
+    xlab("You") + ylab("Share of Diet (%)") + 
+  theme(
+    plot.title = element_text(size = 8, hjust = 0.5),
+    legend.title = element_blank(),
+    legend.text = element_text(size = 7),
+    legend.position = "top",
+     legend.box.just = "center",  
+    plot.margin = margin(10, 10, 10, 10),
+    axis.title.y = element_text(size = 7),  
+    axis.title.x = element_text(size = 7),
+    axis.text.y = element_text(size = 7),  
+    axis.text.x = element_text(size = 7) 
+  ) +
+  scale_fill_manual(values = colors_beverages),
+  
+  
+  ggplot(yearly_conso_demo_groups %>% 
+                 
+                 filter(macro_group == "Beverages") %>% 
+                 filter(demographic_group == dem_profile_individual()), aes(x = "", y = share_conso, fill = specific_group)) +
+    geom_bar(stat = "identity", position = "stack", width = 0.3) +
+  theme_light() +
+  labs(title = paste0(dem_profile_individual(), " average yearly beverage consumption: ", 
+                                   round(sum((yearly_conso_demo_groups %>% 
+                                                filter(macro_group == "Beverages") %>% 
+                                                filter(demographic_group == dem_profile_individual()))$value ), digits = 0), 
+                                   " L\n(about ", convert_to_glass( sum((yearly_conso_demo_groups %>% filter(macro_group == "Beverages") %>% filter(demographic_group == dem_profile_individual()))$value ), "year", "water"), " glasses per day)"),
+       fill = "Specific Group") +
+        xlab(paste0(dem_profile_individual())) + ylab("Share of Diet (%)") + 
+  theme(
+    plot.title = element_text(size = 8, hjust = 0.5),
+    legend.title = element_blank(),
+    legend.text = element_text(size = 7),
+    legend.position = "top",
+     legend.box.just = "center", 
+    plot.margin = margin(10, 10, 10, 10),
+    axis.title.y = element_text(size = 7),
+    axis.title.x = element_text(size = 7),
+    axis.text.y = element_text(size = 7), 
+    axis.text.x = element_text(size = 7) 
+  ) +
+  scale_fill_manual(values = colors_beverages) ,
+  
+
+  common.legend = TRUE, legend = "top"
+  
+)
+
+
+```
+
+## Overview of your Environmental Impacts
+
+-   **Major Impacts**
+
+    -   **Environmental Footprint Score:** `r paste(round((summary_impacts_individual() %>% filter(type_impacts == list_impacts[1]) %>% filter(demographic_group == "You"))$yearly_impacts, digits = 0), list_units_impacts[1])`
+
+    -   **Climate change:** `r paste(round((summary_impacts_individual() %>% filter(type_impacts == list_impacts[2]) %>% filter(demographic_group == "You"))$yearly_impacts, digits = 0), list_units_impacts[2])`
+
+    -   **Land use:** `r paste(round((summary_impacts_individual() %>% filter(type_impacts == list_impacts[11]) %>% filter(demographic_group == "You"))$yearly_impacts, digits = 0), list_units_impacts[11])`
+
+-   **Health-related Impacts**
+
+    -   **Ozone Layer Depletion:** `r paste(round((summary_impacts_individual() %>% filter(type_impacts == list_impacts[3]) %>% filter(demographic_group == "You"))$yearly_impacts, digits = 0), list_units_impacts[3])`
+
+    -   **Photochemical Ozone Formation:** `r paste(round((summary_impacts_individual() %>% filter(type_impacts == list_impacts[5]) %>% filter(demographic_group == "You"))$yearly_impacts, digits = 0), list_units_impacts[5])`
+
+    -   **Ionizing Radiation:** `r paste(round((summary_impacts_individual() %>% filter(type_impacts == list_impacts[4]) %>% filter(demographic_group == "You"))$yearly_impacts, digits = 0), list_units_impacts[4])`
+
+    -   **Particulate Matter:** `r paste(round((summary_impacts_individual() %>% filter(type_impacts == list_impacts[6]) %>% filter(demographic_group == "You"))$yearly_impacts, digits = 0), list_units_impacts[6])`
+
+-   **Water & Soil Impacts**
+
+    -   **Soil & Water Acidification:** `r paste(round((summary_impacts_individual() %>% filter(type_impacts == list_impacts[7]) %>% filter(demographic_group == "You"))$yearly_impacts, digits = 0), list_units_impacts[7])`
+
+    -   **Terrestrial Eutrophication:** `r paste(round((summary_impacts_individual() %>% filter(type_impacts == list_impacts[8]) %>% filter(demographic_group == "You"))$yearly_impacts, digits = 0), list_units_impacts[8])`
+
+    -   **Freshwater Eutrophication:** `r paste(round((summary_impacts_individual() %>% filter(type_impacts == list_impacts[9]) %>% filter(demographic_group == "You"))$yearly_impacts, digits = 0), list_units_impacts[9])`
+
+    -   **Marine Eutrophication:** `r paste(round((summary_impacts_individual() %>% filter(type_impacts == list_impacts[10]) %>% filter(demographic_group == "You"))$yearly_impacts, digits = 0), list_units_impacts[10])`
+
+    -   **Freshwater Ecotoxicity:** `r paste(round((summary_impacts_individual() %>% filter(type_impacts == list_impacts[12]) %>% filter(demographic_group == "You"))$yearly_impacts, digits = 0), list_units_impacts[12])`
+
+    -   **Water Depletion:** `r paste(round((summary_impacts_individual() %>% filter(type_impacts == list_impacts[13]) %>% filter(demographic_group == "You"))$yearly_impacts, digits = 0), list_units_impacts[13])`
+
+-   **Other Depletion Impacts**
+
+    -   **Energy Depletion:** `r paste(round((summary_impacts_individual() %>% filter(type_impacts == list_impacts[14]) %>% filter(demographic_group == "You"))$yearly_impacts, digits = 0), list_units_impacts[14])`
+
+    -   **Metals/Minerals Depletion:** `r paste(round((summary_impacts_individual() %>% filter(type_impacts == list_impacts[15]) %>% filter(demographic_group == "You"))$yearly_impacts, digits = 0), list_units_impacts[15])`
+
+## Comparison of Your Impacts to People of your Age Group
+
+### Absolute amounts
+
+```{r, fig.height = 8, echo = FALSE}
+
+
+ggplot(left_join(comparison_individual_impacts_age_groups(), description_impacts), 
+       
+       aes(x = demographic_group, y = round(yearly_impacts, digits = 0), fill = demographic_group)) +
+  facet_wrap(~ name, scales = "free", ncol = 3) +
+  geom_col(width = 0.3) +
+  xlab("") + 
+  ylab("Yearly Impacts") + 
+  theme_light() + 
+  theme(
+       plot.title = element_text(size = 8, hjust = 0.5),
+    legend.title = element_blank(),
+    legend.text = element_text(size = 7),
+    legend.position = "none",
+     legend.box.just = "center", 
+    plot.margin = margin(10, 10, 10, 10),
+    axis.title.y = element_text(size = 7),
+    axis.title.x = element_text(size = 7),
+    axis.text.y = element_text(size = 5), 
+    axis.text.x = element_text(size = 5),
+    strip.text.x = element_text(size = 6)
+  ) +
+  scale_fill_manual(values = colors_sexyou) 
+
+```
+
+### Percentage difference
+
+```{r, fig.height = 8, echo = FALSE}
+
+
+ggplot(left_join(comparison_individual_impacts_age_groups_percent() %>% pivot_longer(cols=c('change_vs_males', 'change_vs_females', 'mean_change'),
+                    names_to='comp_group',
+                    values_to='perc_diff'), description_impacts), 
+       
+       aes(x = reorder(name, -perc_diff), y = round(perc_diff, digits = 0), fill = comp_group))  + 
+    geom_bar(position="dodge", stat="identity") + coord_flip() +
+  ggtitle("Yours Impacts...") + 
+  xlab("") + 
+  ylab("Percentage Difference (%)") + 
+  theme_light() + 
+  theme(
+       plot.title = element_text(size = 8, hjust = 0.5),
+    legend.text = element_text(size = 7),
+    legend.position = "top",
+     legend.box.just = "center", 
+    plot.margin = margin(10, 10, 10, 10),
+    legend.title = element_text(size = 7),
+    axis.title.y = element_text(size = 7),
+    axis.title.x = element_text(size = 7),
+    axis.text.y = element_text(size = 7), 
+    axis.text.x = element_text(size = 7)
+  ) +
+  scale_fill_manual("Compared to...", labels= c ( paste0("Females ", age_group_individual() ), paste0("Males ", age_group_individual() ), 'Both Sexes Pooled'), values = colors_sexyou) 
+
+```
+
+### Your Position in the Distribution of Impacts
+
+```{r, fig.height = 8, echo = FALSE}
+
+ggplot(percentiles_impacts_all %>% 
+                 filter(demographic_group %in% c(paste0("Males ", age_group_individual() ), 
+                                                 paste0("Females ", age_group_individual() ) ) )
+       , aes(x=percentile, y=value, fill = demographic_group)) +
+  geom_area(alpha=0.4, position = 'identity') +
+  ggtitle("Distribution of Yearly Impacts") + 
+  xlab("Percentile") + 
+  ylab("Yearly Impacts")  +
+  scale_fill_manual("Compared to...", values = colors_sexyou, breaks = c(paste0("Females ", age_group_individual()), paste0("Males ", age_group_individual() ) ) ) +
+  geom_hline(aes(yintercept=yearly_impacts), left_join(comparison_individual_impacts_age_groups_percent(), description_impacts))  + facet_wrap(~ name, scales = "free", ncol = 3) + geom_text(
+  data    = left_join(comparison_individual_impacts_age_groups_percent(), description_impacts),
+  mapping = aes(x = -Inf, y = yearly_impacts), label = "You",
+  hjust   = -0.1,
+  vjust   = -1
+, show.legend = FALSE, size = 6 /.pt) + 
+  theme_light() + 
+  theme(
+       plot.title = element_text(size = 8, hjust = 0.5),
+    legend.text = element_text(size = 7),
+    legend.position = "top",
+     legend.box.just = "center", 
+    plot.margin = margin(10, 10, 10, 10),
+    legend.title = element_text(size = 7),
+    axis.title.y = element_text(size = 7),
+    axis.title.x = element_text(size = 7),
+    axis.text.y = element_text(size = 5), 
+    axis.text.x = element_text(size = 5),
+    strip.text.x = element_text(size = 6)
+  )
+
+
+```
+
+## Your Body and How it relates to Your Impacts
+
+```{r, fig.height = 6, echo = FALSE}
+
+
+ggarrange(
+  
+  # height
+
+ggplot(anthropo_dem_groups() %>% filter(impacts == "environmental_footprint_score") , aes(x = round(taille, digits = 2), y = round(value, digits = 0), color = demographic_group)) +
+  
+  # Scatter plot
+  geom_point() +
+  
+  # Regression line
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", size = 1, color = "black") +
+  
+
+  
+  # Labels and titles
+  labs(x = "Height (cm)", 
+       y = paste("Environmental Footprint Score (mPt)"),
+       title = paste("Height versus Environmental Footprint Score")) + 
+  theme_light() +
+  geom_point(aes(color = "You", x=input$height, y= (summary_impacts_individual() %>% 
+           filter(type_impacts == "environmental_footprint_score") %>% 
+           filter(demographic_group == "You"))$yearly_impacts), size = 5) + 
+  theme_light() + 
+  theme(
+       plot.title = element_text(size = 8, hjust = 0.5),
+    legend.text = element_text(size = 7),
+    legend.position = "top",
+     legend.box.just = "center", 
+    plot.margin = margin(10, 10, 10, 10),
+    legend.title = element_text(size = 7),
+    axis.title.y = element_text(size = 7),
+    axis.title.x = element_text(size = 7),
+    axis.text.y = element_text(size = 5), 
+    axis.text.x = element_text(size = 5),
+    strip.text.x = element_text(size = 6)
+  ) +
+  scale_color_manual("Demographic Groups", values = colors_sexyou_faded),
+
+# Weight
+
+ggplot(anthropo_dem_groups() %>% filter(impacts == "environmental_footprint_score") , aes(x = round(poids, digits = 2), y = round(value, digits = 0), color = demographic_group)) +
+  
+  # Scatter plot
+  geom_point() +
+  
+  # Regression line
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", size = 1, color = "black") +
+  
+
+  
+  # Labels and titles
+  labs(x = "Weight (kg)", 
+       y = paste("Environmental Footprint Score (mPt)"),
+       title = paste("Weight versus Environmental Footprint Score")) + 
+  theme_light() +
+  geom_point(aes(color = "You", x=input$weight, y= (summary_impacts_individual() %>% 
+           filter(type_impacts == "environmental_footprint_score") %>% 
+           filter(demographic_group == "You"))$yearly_impacts), size = 5) + 
+  theme_light() + 
+  theme(
+       plot.title = element_text(size = 8, hjust = 0.5),
+    legend.text = element_text(size = 7),
+    legend.position = "top",
+     legend.box.just = "center", 
+    plot.margin = margin(10, 10, 10, 10),
+    legend.title = element_text(size = 7),
+    axis.title.y = element_text(size = 7),
+    axis.title.x = element_text(size = 7),
+    axis.text.y = element_text(size = 5), 
+    axis.text.x = element_text(size = 5),
+    strip.text.x = element_text(size = 6)
+  ) +
+  scale_color_manual("Demographic Groups", values = colors_sexyou_faded),
+
+# BMI
+
+ggplot(anthropo_dem_groups() %>% filter(impacts == "environmental_footprint_score") , aes(x = imc, y = round(value, digits = 0), color = demographic_group)) +
+  
+  # Scatter plot
+  geom_point() +
+  
+  # Regression line
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", size = 1, color = "black") +
+  
+
+  
+  # Labels and titles
+  labs(x = "BMI (kg/m2)", 
+       y = paste("Environmental Footprint Score (mPt)"),
+       title = paste("BMI versus Environmental Footprint Score")) + 
+  theme_light() +
+  geom_point(aes(color = "You", x=bmi_individual(), y= (summary_impacts_individual() %>% 
+           filter(type_impacts == "environmental_footprint_score") %>% 
+           filter(demographic_group == "You"))$yearly_impacts), size = 5) + 
+  theme_light() + 
+  theme(
+       plot.title = element_text(size = 8, hjust = 0.5),
+    legend.text = element_text(size = 7),
+    legend.position = "top",
+     legend.box.just = "center", 
+    plot.margin = margin(10, 10, 10, 10),
+    legend.title = element_text(size = 7),
+    axis.title.y = element_text(size = 7),
+    axis.title.x = element_text(size = 7),
+    axis.text.y = element_text(size = 5), 
+    axis.text.x = element_text(size = 5),
+    strip.text.x = element_text(size = 6)
+  ) +
+  scale_color_manual("Demographic Groups", values = colors_sexyou_faded),
+
+# BMR
+
+ggplot(anthropo_dem_groups() %>% filter(impacts == "environmental_footprint_score") , aes(x = bmr_kcal, y = round(value, digits = 0), color = demographic_group)) +
+  
+  # Scatter plot
+  geom_point() +
+  
+  # Regression line
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", size = 1, color = "black") +
+  
+
+  
+  # Labels and titles
+  labs(x = "BMR (kcal)", 
+       y = paste("Environmental Footprint Score (mPt)"),
+       title = paste("BMR versus Environmental Footprint Score")) + 
+  theme_light() +
+  geom_point(aes(color = "You", x=bmr_individual(), y= (summary_impacts_individual() %>% 
+           filter(type_impacts == "environmental_footprint_score") %>% 
+           filter(demographic_group == "You"))$yearly_impacts), size = 5) + 
+  theme_light() + 
+  theme(
+       plot.title = element_text(size = 8, hjust = 0.5),
+    legend.text = element_text(size = 7),
+    legend.position = "top",
+     legend.box.just = "center", 
+    plot.margin = margin(10, 10, 10, 10),
+    legend.title = element_text(size = 7),
+    axis.title.y = element_text(size = 7),
+    axis.title.x = element_text(size = 7),
+    axis.text.y = element_text(size = 5), 
+    axis.text.x = element_text(size = 5),
+    strip.text.x = element_text(size = 6)
+  ) +
+  scale_color_manual("Demographic Groups", values = colors_sexyou_faded) 
+  
+,   common.legend = TRUE, legend = "top")
+
+
+```
+
+## Causes of Your Impacts
+
+### Impacts Caused by the Different Food Groups
+
+```{r, fig.height = 8.5, echo = FALSE}
+
+
+plotList_treemap <- lapply(1:length(list_impacts), function(i) {
+
+ggplot(left_join(correspondence_macro_specific %>% filter(macro_group != "Baby food"), all_impacts_individual() %>%filter(type_impacts == list_impacts[i])), aes(area = share_impacts, fill = macro_group, subgroup = macro_group, label = paste0(specific_group, "\n", share_impacts, "%") ) ) +
+  geom_treemap() +
+  scale_fill_manual(values = colors_macrofood) +
+  geom_treemap_subgroup_border(color = "white", size = 1) +
+  geom_treemap_text(colour = "white", place = "topleft", reflow = T) +
+  ggtitle(paste0("Causes of Your ", list_names_impacts[i])) + 
+  theme_light()  + 
+  theme(
+    plot.title = element_text(size = 6, hjust = 0.5),
+    legend.title = element_blank(),
+    legend.text = element_text(size = 6),
+    legend.position = "top",
+     legend.box.just = "center",  
+    plot.margin = margin(10, 10, 10, 10),
+    axis.title.y = element_text(size = 6),  
+    axis.title.x = element_text(size = 6),
+    axis.text.y = element_text(size = 6),  
+    axis.text.x = element_text(size = 6) 
+  ) 
+  
+  
+  
+              }
+)
+
+
+ggarrange(plotlist=plotList_treemap, common.legend = TRUE, legend = "top", ncol = 3, nrow = 5) 
+
+
+```
+
+### Decomposition of the Difference between Your Impacts and Those of Other Groups
+
+```{r, fig.height = 3, echo = FALSE}
+
+# Waterfall graph males
+
+
+# Waterfall graph males
+
+ males_target_ggplot_waterfall <- paste0("Males ", age_group_individual() ) # name of the demographic group to compare individual against (i.e., reference group)
+
+      data_dem_group_male_waterfall_ggplot <- aggregated_yearly_vars_dem_groups %>% # data for the targeted demographic group
+        filter(demographic_group == males_target_ggplot_waterfall) %>%
+        select("environmental_footprint_score", "conso_yearly_kg") # select the considered impact and the quantity in the table 
+      
+      individual_data_male_waterfall_ggplot <- individual_waterfall_data()
+      
+      
+      impact_dem_mw_ggplot <- as.numeric(data_dem_group_male_waterfall_ggplot[["environmental_footprint_score"]])
+      impact_individual_mw_ggplot <- as.numeric(individual_data_male_waterfall_ggplot[["environmental_footprint_score"]])
+      
+      quant_dem_mw_ggplot <- as.numeric(data_dem_group_male_waterfall_ggplot[["conso_yearly_kg"]])
+      quant_individual_mw_ggplot <-  as.numeric(individual_data_male_waterfall_ggplot[["conso_yearly_kg"]])
+      
+      intens_dem_mw_ggplot <- impact_dem_mw_ggplot / quant_dem_mw_ggplot
+      intens_individual_mw_ggplot <- impact_individual_mw_ggplot / quant_individual_mw_ggplot
+      
+     mw_data_ggplot <- data.frame(
+        "Variable" = c(paste0(males_target_ggplot_waterfall, " - ", "Environmental Footprint Score"),
+                       "Dietary choices", 
+                       "Consumed quantities", 
+                       "Interactions",
+                    paste0("You", " - Environmental Footprint Score")), 
+        
+        "Value" = c(impact_dem_mw_ggplot, 
+                    
+                    ( intens_individual_mw_ggplot - intens_dem_mw_ggplot ) * quant_dem_mw_ggplot, # Difference due to dietary choices 
+                    
+                    (quant_individual_mw_ggplot - quant_dem_mw_ggplot) * intens_dem_mw_ggplot, # Difference due to consumed quantities
+                    
+                    (intens_individual_mw_ggplot - intens_dem_mw_ggplot) * (quant_individual_mw_ggplot - quant_dem_mw_ggplot),  # Interactions
+                    
+                    -impact_individual_mw_ggplot), # your environmental impact
+        
+        "Type" = c("Male Impact", "Causes of differences", "Causes of differences", "Causes of differences", "Your Impact"))
+
+mw_data_ggplot$Variable <- factor(mw_data_ggplot$Variable, levels = mw_data_ggplot$Variable)
+mw_data_ggplot$id <- seq_along(mw_data_ggplot$Value)
+mw_data_ggplot$evo <- ifelse(mw_data_ggplot$Value > 0, "Increase", "Decrease")
+mw_data_ggplot[mw_data_ggplot$Variable %in% c(paste0("You", " - Environmental Footprint Score") ),"evo"] <- "Your Impacts"
+mw_data_ggplot[mw_data_ggplot$Variable %in% c(paste0(males_target_ggplot_waterfall, " - ", "Environmental Footprint Score") ),"evo"] <- "Comparison Group Impacts"
+
+
+mw_data_ggplot$end <- cumsum(mw_data_ggplot$Value)
+mw_data_ggplot$end <- c(head(mw_data_ggplot$end, -1), 0)
+mw_data_ggplot$start <- c(0, head(mw_data_ggplot$end, -1))
+
+
+ggplot(mw_data_ggplot, aes(Variable, fill = evo)) + geom_rect(aes(x = Variable, xmin = id - 0.15, xmax = id + 0.15, ymin = end, ymax = start)) + 
+ggtitle(paste0("You versus Males ", age_group_individual(), " -  Environmental Footprint Score")) +
+  labs(y = "Environmental Footprint Score (mPt)", x = "") + 
+  theme_light()  + theme(
+    plot.title = element_text(size = 6, hjust = 0.5),
+    legend.text = element_text(size = 6),
+    legend.position = "none",
+     legend.box.just = "center",  
+    plot.margin = margin(10, 10, 10, 10),
+    axis.title.y = element_text(size = 6),  
+    axis.title.x = element_text(size = 6),
+    axis.text.y = element_text(size = 6),  
+    axis.text.x = element_text(size = 6) 
+  )  +  scale_x_discrete(guide = guide_axis(n.dodge=3)) +
+  scale_fill_manual(values = setNames(c(colors_sexyou[2], "#008856", "#BE0032", colors_sexyou[3]), c("Comparison Group Impacts", "Increase", "Decrease", "Your Impacts")))
+
+
+
+```
+
+
+```{r, fig.height = 3, echo = FALSE}
+
+# Waterfall graph females
+
+ females_target_ggplot_waterfall <- paste0("Females ", age_group_individual() ) # name of the demographic group to compare individual against (i.e., reference group)
+
+      data_dem_group_female_waterfall_ggplot <- aggregated_yearly_vars_dem_groups %>% # data for the targeted demographic group
+        filter(demographic_group == females_target_ggplot_waterfall) %>%
+        select("environmental_footprint_score", "conso_yearly_kg") # select the considered impact and the quantity in the table 
+      
+      individual_data_female_waterfall_ggplot <- individual_waterfall_data()
+      
+      
+      impact_dem_fw_ggplot <- as.numeric(data_dem_group_female_waterfall_ggplot[["environmental_footprint_score"]])
+      impact_individual_fw_ggplot <- as.numeric(individual_data_female_waterfall_ggplot[["environmental_footprint_score"]])
+      
+      quant_dem_fw_ggplot <- as.numeric(data_dem_group_female_waterfall_ggplot[["conso_yearly_kg"]])
+      quant_individual_fw_ggplot <-  as.numeric(individual_data_female_waterfall_ggplot[["conso_yearly_kg"]])
+      
+      intens_dem_fw_ggplot <- impact_dem_fw_ggplot / quant_dem_fw_ggplot
+      intens_individual_fw_ggplot <- impact_individual_fw_ggplot / quant_individual_fw_ggplot
+      
+     fw_data_ggplot <- data.frame(
+        "Variable" = c(paste0(females_target_ggplot_waterfall, " - ", "Environmental Footprint Score"),
+                       "Dietary choices", 
+                       "Consumed quantities", 
+                       "Interactions",
+                    paste0("You", " - Environmental Footprint Score")), 
+        
+        "Value" = c(impact_dem_fw_ggplot, 
+                    
+                    ( intens_individual_fw_ggplot - intens_dem_fw_ggplot ) * quant_dem_fw_ggplot, # Difference due to dietary choices 
+                    
+                    (quant_individual_fw_ggplot - quant_dem_fw_ggplot) * intens_dem_fw_ggplot, # Difference due to consumed quantities
+                    
+                    (intens_individual_fw_ggplot - intens_dem_fw_ggplot) * (quant_individual_fw_ggplot - quant_dem_fw_ggplot),  # Interactions
+                    
+                    -impact_individual_fw_ggplot), # your environmental impact
+        
+        "Type" = c("Female Impact", "Causes of differences", "Causes of differences", "Causes of differences", "Your Impact"))
+
+fw_data_ggplot$Variable <- factor(fw_data_ggplot$Variable, levels = fw_data_ggplot$Variable)
+fw_data_ggplot$id <- seq_along(fw_data_ggplot$Value)
+fw_data_ggplot$evo <- ifelse(fw_data_ggplot$Value > 0, "Increase", "Decrease")
+fw_data_ggplot[fw_data_ggplot$Variable %in% c(paste0("You", " - Environmental Footprint Score") ),"evo"] <- "Your Impacts"
+fw_data_ggplot[fw_data_ggplot$Variable %in% c(paste0(females_target_ggplot_waterfall, " - ", "Environmental Footprint Score") ),"evo"] <- "Comparison Group Impacts"
+
+
+fw_data_ggplot$end <- cumsum(fw_data_ggplot$Value)
+fw_data_ggplot$end <- c(head(fw_data_ggplot$end, -1), 0)
+fw_data_ggplot$start <- c(0, head(fw_data_ggplot$end, -1))
+
+
+ggplot(fw_data_ggplot, aes(Variable, fill = evo)) + geom_rect(aes(x = Variable, xmin = id - 0.15, xmax = id + 0.15, ymin = end, ymax = start)) + 
+ggtitle(paste0("You versus Females ", age_group_individual(), " -  Environmental Footprint Score")) +
+  labs(y = "Environmental Footprint Score (mPt)", x = "") + 
+  theme_light()  + theme(
+    plot.title = element_text(size = 6, hjust = 0.5),
+    legend.text = element_text(size = 6),
+    legend.position = "none",
+     legend.box.just = "center",  
+    plot.margin = margin(10, 10, 10, 10),
+    axis.title.y = element_text(size = 6),  
+    axis.title.x = element_text(size = 6),
+    axis.text.y = element_text(size = 6),  
+    axis.text.x = element_text(size = 6) 
+  )  +  scale_x_discrete(guide = guide_axis(n.dodge=3)) +
+  scale_fill_manual(values = setNames(c(colors_sexyou[1], "#008856", "#BE0032", colors_sexyou[3]), c("Comparison Group Impacts", "Increase", "Decrease", "Your Impacts")))
+  
+
+```
+
+
+
