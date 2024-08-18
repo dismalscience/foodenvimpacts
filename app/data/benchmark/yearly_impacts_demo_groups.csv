@@ -1,0 +1,121 @@
+demographic_group,type_impacts,yearly_impacts
+All adult females,environmental_footprint_score,216.58115834780023
+All adult females,climate_change,1726.1095868001594
+All adult females,ozone_depletion,179.96182397784872
+All adult females,ion_radiation,441.4296156578598
+All adult females,ozone_formation,5720.640947771286
+All adult females,particles,160.34351176897135
+All adult females,acidification,22.26664231443978
+All adult females,terrestrial_eutrophisation,88.13192838222672
+All adult females,fresh_water_eutrophisation,298.5341876205568
+All adult females,marine_eutrophisation,7118.90460573241
+All adult females,soil_use,84294.57219850985
+All adult females,fresh_water_ecotoxicity,44703.37208210526
+All adult females,water_depletion,2265.697203419972
+All adult females,energy_depletion,18772.66794696657
+All adult females,mineral_depletion,2787.707829059597
+All adult males,environmental_footprint_score,293.1388792791082
+All adult males,climate_change,2413.80289612907
+All adult males,ozone_depletion,236.71155122367787
+All adult males,ion_radiation,572.3047954340713
+All adult males,ozone_formation,7630.114673148548
+All adult males,particles,223.8853905834764
+All adult males,acidification,31.122429508135184
+All adult males,terrestrial_eutrophisation,124.11262401332412
+All adult males,fresh_water_eutrophisation,386.1799341323057
+All adult males,marine_eutrophisation,9766.678683148799
+All adult males,soil_use,120209.66235734537
+All adult males,fresh_water_ecotoxicity,58664.33625271007
+All adult males,water_depletion,2700.168986510783
+All adult males,energy_depletion,24362.29638552456
+All adult males,mineral_depletion,3749.1860940352535
+Females 18-44,environmental_footprint_score,208.5363866703231
+Females 18-44,climate_change,1684.497297421798
+Females 18-44,ozone_depletion,192.83842425700445
+Females 18-44,ion_radiation,428.9018124348098
+Females 18-44,ozone_formation,5426.100019130733
+Females 18-44,particles,155.6729655357652
+Females 18-44,acidification,21.640540689212667
+Females 18-44,terrestrial_eutrophisation,85.86289663155783
+Females 18-44,fresh_water_eutrophisation,291.26764915946455
+Females 18-44,marine_eutrophisation,6824.122919947072
+Females 18-44,soil_use,81804.24125254343
+Females 18-44,fresh_water_ecotoxicity,41630.83248326285
+Females 18-44,water_depletion,2070.0878941558412
+Females 18-44,energy_depletion,18265.64208319495
+Females 18-44,mineral_depletion,2676.022042361826
+Females 45-64,environmental_footprint_score,227.33154461104724
+Females 45-64,climate_change,1807.5715840539558
+Females 45-64,ozone_depletion,170.36262709131347
+Females 45-64,ion_radiation,452.86437730011284
+Females 45-64,ozone_formation,6017.707730934648
+Females 45-64,particles,167.56166469696564
+Females 45-64,acidification,23.275437160043953
+Females 45-64,terrestrial_eutrophisation,92.11452246439218
+Females 45-64,fresh_water_eutrophisation,313.95880555610114
+Females 45-64,marine_eutrophisation,7455.056729144991
+Females 45-64,soil_use,88037.27619936413
+Females 45-64,fresh_water_ecotoxicity,47938.483678991244
+Females 45-64,water_depletion,2460.5490407355646
+Females 45-64,energy_depletion,19343.14232897279
+Females 45-64,mineral_depletion,2908.9349757317937
+Females 65-79,environmental_footprint_score,214.79556312376297
+Females 65-79,climate_change,1664.4996231004613
+Females 65-79,ozone_depletion,167.07889374198277
+Females 65-79,ion_radiation,448.5705532343369
+Females 65-79,ozone_formation,5849.2627126260095
+Females 65-79,particles,157.39471040641587
+Females 65-79,acidification,21.79390551683172
+Females 65-79,terrestrial_eutrophisation,85.78356456392947
+Females 65-79,fresh_water_eutrophisation,285.1510629706173
+Females 65-79,marine_eutrophisation,7174.038112657273
+Females 65-79,soil_use,82969.2761677625
+Females 65-79,fresh_water_ecotoxicity,45803.871984174606
+Females 65-79,water_depletion,2357.7960413910882
+Females 65-79,energy_depletion,18844.966585664602
+Females 65-79,mineral_depletion,2815.3653014801753
+Males 18-44,environmental_footprint_score,296.850765598861
+Males 18-44,climate_change,2503.4407057569324
+Males 18-44,ozone_depletion,216.95050259501656
+Males 18-44,ion_radiation,575.3494298992123
+Males 18-44,ozone_formation,7740.722601649283
+Males 18-44,particles,229.22414944212224
+Males 18-44,acidification,31.989341315212382
+Males 18-44,terrestrial_eutrophisation,127.78539430917584
+Males 18-44,fresh_water_eutrophisation,386.16031979967227
+Males 18-44,marine_eutrophisation,9937.48125040472
+Males 18-44,soil_use,123610.98537752412
+Males 18-44,fresh_water_ecotoxicity,55394.04414861424
+Males 18-44,water_depletion,2651.402235333218
+Males 18-44,energy_depletion,24598.926899213562
+Males 18-44,mineral_depletion,3627.793528750648
+Males 45-64,environmental_footprint_score,305.74565082291434
+Males 45-64,climate_change,2490.1169273845244
+Males 45-64,ozone_depletion,276.4592459252271
+Males 45-64,ion_radiation,587.4420791671337
+Males 45-64,ozone_formation,7985.659071591052
+Males 45-64,particles,233.77355185065701
+Males 45-64,acidification,32.50846061623414
+Males 45-64,terrestrial_eutrophisation,129.66685612501533
+Males 45-64,fresh_water_eutrophisation,405.5235332552528
+Males 45-64,marine_eutrophisation,10182.290653077405
+Males 45-64,soil_use,125882.1969733138
+Males 45-64,fresh_water_ecotoxicity,62539.382946392994
+Males 45-64,water_depletion,2846.0577376980214
+Males 45-64,energy_depletion,25047.871196246044
+Males 45-64,mineral_depletion,3942.179512745771
+Males 65-79,environmental_footprint_score,254.8727059205502
+Males 65-79,climate_change,1993.0971318600577
+Males 65-79,ozone_depletion,204.5364242652774
+Males 65-79,ion_radiation,529.5368802042983
+Males 65-79,ozone_formation,6535.180996511504
+Males 65-79,particles,187.15387566617807
+Males 65-79,acidification,25.647323424029558
+Males 65-79,terrestrial_eutrophisation,101.63420213741487
+Males 65-79,fresh_water_eutrophisation,343.1167627886851
+Males 65-79,marine_eutrophisation,8375.50689862149
+Males 65-79,soil_use,98236.34363975367
+Males 65-79,fresh_water_ecotoxicity,59296.33048945347
+Males 65-79,water_depletion,2515.0892499724705
+Males 65-79,energy_depletion,22150.386926749514
+Males 65-79,mineral_depletion,3659.027890846459
